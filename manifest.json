@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "Lifeink",
+  "version": "1.0.10",
+  "description": "Chrome extension using Ollama API for writing assistance.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "contextMenus",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "https://*.dynamics.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>", "https://*.dynamics.com/*"],
+      "js": ["floatingToolbar.js", "content.js"],
+      "all_frames": true,
+      "run_at": "document_end"
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "action": {
+    "default_icon": {
+      "16": "Lifeink.png",
+      "48": "Lifeink.png",
+      "128": "Lifeink.png"
+    },
+    "default_title": "Lifeink",
+    "default_popup": "popup.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["popup.js"],
+      "matches": ["<all_urls>"]
+    },
+    {
+      "resources": ["Lifeink.png"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "icons": {
+    "128": "Lifeink.png",
+    "48": "Lifeink.png",
+    "16": "Lifeink.png"
+  }
+}

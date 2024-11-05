@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lifeink Options</title>
+  <style>
+    .prompt-container {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .prompt-container input, .prompt-container textarea {
+      width: calc(100% - 22px);
+      box-sizing: border-box;
+      margin-bottom: 5px;
+    }
+    .model-loading {
+      color: #666;
+      font-style: italic;
+    }
+    .error-message {
+      color: red;
+      margin: 5px 0;
+    }
+    select {
+      width: calc(100% - 22px);
+      padding: 8px;
+      margin-bottom: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+    #save {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px 40px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      width: 80%;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #save:hover {
+      background-color: #45a049;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    #save:active {
+      background-color: #3d8b40;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      transform: translateY(1px);
+    }
+    #add-prompt {
+      margin: 10px 0;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .toggle-switch {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      margin-right: 10px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    .toggle-label {
+      font-weight: bold;
+    }
+    .experimental-features {
+      margin: 40px 0;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+    }
+    .experimental-features h2 {
+      color: #343a40;
+      margin-top: 0;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .experimental-warning {
+      color: #856404;
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    .feature-container {
+      background: white;
+      padding: 16px;
+      border-radius: 6px;
+      border: 1px solid #dee2e6;
+    }
+    .feature-info {
+      margin-left: 16px;
+    }
+    .feature-description {
+      color: #6c757d;
+      margin: 4px 0 0 0;
+      font-size: 0.9em;
+    }
+    .toggle-switch {
+      display: flex;
+      align-items: flex-start;
+    }
+    .toggle-label {
+      font-weight: 600;
+      color: #495057;
+    }
+    .save-icon {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .experimental-warning::before {
+      content: "⚠";
+      margin-right: 8px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lifeink Options</h1>
+  <p>Lifeink is a Chrome extension that leverages the power of open-source LLMs and SLMs via the Ollama API to enhance your writing. It provides a range of features directly accessible through a right-click context menu, allowing you to improve text on any webpage.</p>
+  <br><br>
+  <p>Quick Start:</p>
+  <p>1. Run OLLAMA serve</p>
+  <p>2. Make sure Windows System Environment Variable OLLAMA_ORIGINS=*</p>
+  <p>3. Start enjoying the power and privacy of local AI writing support</p>
+  <br><br>
+  <div id="status"></div>
+  <label for="apiKey">Ollama API Key (default value http://localhost:11434/):</label>
+  <input type="text" id="apiKey" placeholder="API Key">
+  <br><br>
+  <label for="llmModel">Ollama Model:</label>
+  <div id="modelSelectContainer">
+    <select id="llmModel">
+      <option value="">Loading models...</option>
+    </select>
+    <div id="modelError" class="error-message"></div>
+    <button id="refreshModels" title="Refresh model list">Refresh</button>
+  </div>
+  <br><br>
+  <label for="customEndpoint">Custom Endpoint (default value http://localhost:11434//api/generate):</label>
+  <input type="text" id="customEndpoint" placeholder="Custom Endpoint">
+  <br><br>
+  <div id="prompts-container">
+  </div>
+  <button id="add-prompt">Add Prompt</button>
+  
+  <div class="experimental-features">
+    <h2>Experimental Features</h2>
+    <p class="experimental-warning">These features are experimental and may not work as expected.</p>
+    <div class="feature-container">
+      <div class="toggle-switch">
+        <label class="switch">
+          <input type="checkbox" id="floatingToolbar">
+          <span class="slider"></span>
+        </label>
+        <div class="feature-info">
+          <span class="toggle-label">Microsoft 365 Floating Toolbar</span>
+          <p class="feature-description">Shows a floating toolbar when text is selected in Microsoft 365 web apps</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="button-container">
+    <button id="save">Save All Changes</button>
+  </div>
+
+  <template id="prompt-template">
+    <div class="prompt-container">
+      <input type="text" class="prompt-title" placeholder="Prompt Title">
+      <textarea class="prompt-text" placeholder="Prompt Text"></textarea>
+      <button class="delete-prompt">Delete</button>
+    </div>
+  </template>
+  <script src="options.js"></script>
+</body>
+</html>
