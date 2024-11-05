@@ -1,6 +1,7 @@
 # Lifeink Chrome Extension
 
-Lifeink is a Chrome extension that leverages the power of LLMs and SLMs via the Ollama API to enhance your writing.  It provides a range of features directly accessible through a right-click context menu, allowing you to improve text on any webpage. You can also add custom prompts to archive your specific outcomes. This project is heavly inspired by https://github.com/zlwaterfield/scramble
+Lifeink is a Chrome extension that leverages the power of LLMs and SLMs via the Ollama API to enhance your writing.  It provides a range of features directly accessible through a right-click context menu, allowing you to improve text on any webpage. You can also add custom prompts to archive your specific outcomes. This project is heavly inspired by https://github.com/zlwaterfield/scramble with OLLAMA API support.
+
 # Screenshot
 
 ![Right-click context menu](assets/rightclick.png)
